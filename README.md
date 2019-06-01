@@ -1,6 +1,8 @@
+![Icon](https://github.com/sysrpl/Backer/blob/master/backer.png) 
+
 # Backer
 
-![Icon](https://github.com/sysrpl/Backer/blob/master/backer.png) A utility to backup multiple folders to multiple locations on Mac and Linux
+A utility to backup multiple folders to multiple locations on Mac and Linux
 
 ## More Information
 
