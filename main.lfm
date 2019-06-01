@@ -10,6 +10,7 @@ object BackupForm: TBackupForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '2.0.2.0'
   object AddSourceButton: TButton
     Left = 8
     Height = 25
@@ -26,7 +27,7 @@ object BackupForm: TBackupForm
     Width = 256
     FileSortType = fstNone
     ReadOnly = True
-    Root = '/home'
+    Root = '/'
     ShowLines = False
     TabOrder = 0
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
@@ -39,7 +40,7 @@ object BackupForm: TBackupForm
     Width = 256
     FileSortType = fstNone
     ReadOnly = True
-    Root = '/media'
+    Root = '/'
     ShowLines = False
     TabOrder = 4
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
@@ -47,9 +48,9 @@ object BackupForm: TBackupForm
   end
   object SourceLabel: TLabel
     Left = 8
-    Height = 17
+    Height = 16
     Top = 8
-    Width = 168
+    Width = 156
     Caption = 'Select folders to backup:'
     ParentColor = False
   end
@@ -60,9 +61,7 @@ object BackupForm: TBackupForm
     Width = 256
     ItemHeight = 0
     OnDblClick = BoxDblClick
-    ScrollWidth = 254
     TabOrder = 2
-    TopIndex = -1
   end
   object RemoveSourceButton: TButton
     Left = 8
@@ -75,9 +74,9 @@ object BackupForm: TBackupForm
   end
   object DestLabel: TLabel
     Left = 272
-    Height = 17
+    Height = 16
     Top = 8
-    Width = 233
+    Width = 217
     Caption = 'Select location to use for backups:'
     ParentColor = False
   end
@@ -97,9 +96,7 @@ object BackupForm: TBackupForm
     Width = 256
     ItemHeight = 0
     OnDblClick = BoxDblClick
-    ScrollWidth = 254
     TabOrder = 6
-    TopIndex = -1
   end
   object RemoveDestButton: TButton
     Left = 272

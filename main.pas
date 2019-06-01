@@ -84,6 +84,19 @@ begin
   end;
 end;
 
+procedure AppendText(FileName, Value: string);
+begin
+  with TStringList.Create do
+  try
+    if FileExists(FileName) then
+      LoadFromFile(FileName);
+    Add(Value);
+    SaveToFile(FileName);
+  finally
+    Free;
+  end;
+end;
+
 procedure TBackupForm.FormCreate(Sender: TObject);
 var
   S: string;
@@ -174,9 +187,9 @@ begin
     if Items.IndexOf(S) > -1 then
     begin
       if Box = SourceBox then
-        MessageDlg('Folder "' + S + '" is already in the backup list.', mtInformation, [mbOk], 0)
+        MessageDlg('Information', 'Folder "' + S + '" is already in the backup list.', mtInformation, [mbOk], 0)
       else
-        MessageDlg('Storage location "' + S + '" is already in the storage location list.', mtInformation, [mbOk], 0);
+        MessageDlg('Information', 'Storage location "' + S + '" is already in the storage location list.', mtInformation, [mbOk], 0);
     end
     else
       Items.Add(S);
@@ -246,11 +259,11 @@ type
 
 constructor TBackupThread.Create(Source, Dest: TStrings);
 begin
-  inherited Create(False);
   FSource := TStringList.Create;
   FSource.Assign(Source);
   FDest := TStringList.Create;
   FDest.Assign(Dest);
+  inherited Create(False);
 end;
 
 destructor TBackupThread.Destroy;
@@ -263,27 +276,44 @@ end;
 
 procedure TBackupThread.Execute;
 
-  procedure Backup(Source, Dest: string);
-  begin
-    CreateDir(Dest);
-    Source := '"' + Source + '/"';
-    Dest := '"' + Dest + '/' + '"';
-    ExecuteProcess('/usr/bin/rsync', '-a ' + Source + ' ' + Dest, []);
-  end;
+    procedure Backup(Source, Dest: string);
+    begin
+      CreateDir(Dest);
+      Source := '"' + Source + '/"';
+      Dest := '"' + Dest + '/' + '"';
+      ExecuteProcess('/usr/bin/rsync', '-a ' + Source + ' ' + Dest, []);
+    end;
+
+    procedure BackupFiles(Source, Dest: TStrings);
+    var
+      S, F, D: string;
+      I, J: Integer;
+    begin
+      for I := 0 to Source.Count - 1 do
+      begin
+        S := Source[I];
+        F := ExtractFileName(S);
+        for J := 0 to Dest.Count - 1 do
+        begin
+          D := Dest[J] + '/' + F;
+          Backup(S, D);
+        end;
+      end;
+    end;
 
 var
-  S, F, D: string;
-  I, J: Integer;
+  S, D: string;
 begin
   FreeOnTerminate := True;
-  for I := 0 to FSource.Count - 1 do
-  begin
-    S := FSource[I];
-    F := ExtractFileName(S);
-    for J := 0 to FDest.Count - 1 do
+  try
+    BackupFiles(FSource, FDest);
+  except
+    on E: Exception do
     begin
-      D := FDest[I] + '/' + F;
-      Backup(S, D);
+      S := GetAppConfigDir(False);
+      CreateDir(S);
+      D := FormatDateTime('YYYY-MM-DD h:nn:ss am/pm', Now);
+      AppendText(S + '/errors.log', D + ' ' + E.ClassName + ' - ' + E.Message);
     end;
   end;
 end;
@@ -322,7 +352,7 @@ procedure TBackupForm.BackupButtonClick(Sender: TObject);
 begin
   if not Validate then
     Exit;
-  if MessageDlg('Are you sure you want to start the backup now?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  if MessageDlg('Confirmation', 'Are you sure you want to start the backup now?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     FThread := TBackupThread.Create(SourceBox.Items, DestBox.Items);
     FStart := Now;
@@ -352,6 +382,8 @@ begin
     DestBox.Items.SaveToFile(S + '/dest');
     D := FormatDateTime('YYYY-MM-DD h:nn:ss am/pm', Now);
     SaveText(S + '/last', D);
+    AppendText(S + '/backup.log', 'Backup on ' + D + #13'Sources'#13 + Trim(SourceBox.Items.Text) +
+      #13'Destination'#13 + Trim(DestBox.Items.Text) + #13#13);
     Caption := 'Backup - last backup ' + D;
     BackupButton.Caption := 'Start Backup';
     ProgressBar.Visible := False;
