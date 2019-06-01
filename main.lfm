@@ -1,0 +1,153 @@
+object BackupForm: TBackupForm
+  Left = 333
+  Height = 546
+  Top = 250
+  Width = 556
+  Caption = 'Backup'
+  ClientHeight = 546
+  ClientWidth = 556
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  object AddSourceButton: TButton
+    Left = 8
+    Height = 25
+    Top = 296
+    Width = 75
+    Caption = 'Add'
+    OnClick = AddButtonClick
+    TabOrder = 1
+  end
+  object SourceTree: TShellTreeView
+    Left = 8
+    Height = 256
+    Top = 32
+    Width = 256
+    FileSortType = fstNone
+    ReadOnly = True
+    Root = '/home'
+    ShowLines = False
+    TabOrder = 0
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    ObjectTypes = [otFolders]
+  end
+  object DestTree: TShellTreeView
+    Left = 272
+    Height = 256
+    Top = 32
+    Width = 256
+    FileSortType = fstNone
+    ReadOnly = True
+    Root = '/media'
+    ShowLines = False
+    TabOrder = 4
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    ObjectTypes = [otFolders]
+  end
+  object SourceLabel: TLabel
+    Left = 8
+    Height = 17
+    Top = 8
+    Width = 168
+    Caption = 'Select folders to backup:'
+    ParentColor = False
+  end
+  object SourceBox: TListBox
+    Left = 8
+    Height = 120
+    Top = 328
+    Width = 256
+    ItemHeight = 0
+    OnDblClick = BoxDblClick
+    ScrollWidth = 254
+    TabOrder = 2
+    TopIndex = -1
+  end
+  object RemoveSourceButton: TButton
+    Left = 8
+    Height = 25
+    Top = 456
+    Width = 75
+    Caption = 'Remove'
+    OnClick = RemoveButtonClick
+    TabOrder = 3
+  end
+  object DestLabel: TLabel
+    Left = 272
+    Height = 17
+    Top = 8
+    Width = 233
+    Caption = 'Select location to use for backups:'
+    ParentColor = False
+  end
+  object AddDestButton: TButton
+    Left = 272
+    Height = 25
+    Top = 296
+    Width = 75
+    Caption = 'Add'
+    OnClick = AddButtonClick
+    TabOrder = 5
+  end
+  object DestBox: TListBox
+    Left = 272
+    Height = 120
+    Top = 328
+    Width = 256
+    ItemHeight = 0
+    OnDblClick = BoxDblClick
+    ScrollWidth = 254
+    TabOrder = 6
+    TopIndex = -1
+  end
+  object RemoveDestButton: TButton
+    Left = 272
+    Height = 25
+    Top = 456
+    Width = 75
+    Caption = 'Remove'
+    OnClick = RemoveButtonClick
+    TabOrder = 7
+  end
+  object CloseButton: TButton
+    Left = 453
+    Height = 25
+    Top = 496
+    Width = 75
+    Caption = 'Close'
+    OnClick = CloseButtonClick
+    TabOrder = 9
+  end
+  object BackupButton: TButton
+    Left = 320
+    Height = 25
+    Top = 496
+    Width = 131
+    Caption = 'Start Backup'
+    Enabled = False
+    OnClick = BackupButtonClick
+    TabOrder = 8
+  end
+  object Bevel: TBevel
+    Left = 8
+    Height = 1
+    Top = 488
+    Width = 520
+  end
+  object ProgressBar: TProgressBar
+    Left = 8
+    Height = 20
+    Top = 496
+    Width = 304
+    TabOrder = 10
+    Visible = False
+  end
+  object BackupTimer: TTimer
+    Enabled = False
+    Interval = 250
+    OnTimer = BackupTimerTimer
+    left = 128
+    top = 288
+  end
+end
