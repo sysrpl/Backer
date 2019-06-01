@@ -10,7 +10,6 @@ object BackupForm: TBackupForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.2.0'
   object AddSourceButton: TButton
     Left = 8
     Height = 25
@@ -48,9 +47,9 @@ object BackupForm: TBackupForm
   end
   object SourceLabel: TLabel
     Left = 8
-    Height = 16
+    Height = 17
     Top = 8
-    Width = 156
+    Width = 168
     Caption = 'Select folders to backup:'
     ParentColor = False
   end
@@ -61,7 +60,9 @@ object BackupForm: TBackupForm
     Width = 256
     ItemHeight = 0
     OnDblClick = BoxDblClick
+    ScrollWidth = 254
     TabOrder = 2
+    TopIndex = -1
   end
   object RemoveSourceButton: TButton
     Left = 8
@@ -74,9 +75,9 @@ object BackupForm: TBackupForm
   end
   object DestLabel: TLabel
     Left = 272
-    Height = 16
+    Height = 17
     Top = 8
-    Width = 217
+    Width = 233
     Caption = 'Select location to use for backups:'
     ParentColor = False
   end
@@ -96,7 +97,9 @@ object BackupForm: TBackupForm
     Width = 256
     ItemHeight = 0
     OnDblClick = BoxDblClick
+    ScrollWidth = 254
     TabOrder = 6
+    TopIndex = -1
   end
   object RemoveDestButton: TButton
     Left = 272

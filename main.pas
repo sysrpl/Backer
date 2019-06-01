@@ -119,6 +119,8 @@ begin
   {$endif}
   ClientWidth := Bevel.Width + 16;
   ClientHeight := CloseButton.Top + CloseButton.Height + 8;
+  Constraints.MinWidth := Width - 100;
+  Constraints.MinHeight := Height - 200;
   ProgressBar.Top := CloseButton.Top + (CloseButton.Height - ProgressBar.Height) div 2 + 1;
   SourceTree.Anchors := [akLeft, akTop, akBottom];
   AddSourceButton.Anchors := [akLeft, akBottom];
