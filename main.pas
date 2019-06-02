@@ -55,6 +55,16 @@ implementation
 
 { TBackupForm }
 
+var
+  InternalConfig: string;
+
+function Config: string;
+begin
+  if InternalConfig = '' then
+    InternalConfig := IncludeTrailingPathDelimiter(GetAppConfigDir(False));
+  Result := InternalConfig;
+end;
+
 procedure TBackupForm.FormShow(Sender: TObject);
 begin
   Application.BringToFront;
@@ -101,28 +111,22 @@ end;
 
 procedure AppendLog(const Value: string);
 var
-  S, D: string;
+  D: string;
 begin
-  S := GetAppConfigDir(False);
-  S := IncludeTrailingPathDelimiter(S) + 'events.log';
   D := FormatDateTime('YYYY-MM-DD h:nn:ss am/pm ', Now);
-  AppendText(S, D + Value);
+  AppendText(Config + 'events.log', D + Value);
 end;
 
 procedure TBackupForm.FormCreate(Sender: TObject);
-var
-  S: string;
 begin
-  S := GetAppConfigDir(False);
-  ForceDirectories(S);
-  S := IncludeTrailingPathDelimiter(S);
-  if FileExists(S + 'source') then
-    SourceBox.Items.LoadFromFile(S + 'source');
-  if FileExists(S + 'dest') then
-    DestBox.Items.LoadFromFile(S + 'dest');
+  ForceDirectories(Config);
+  if FileExists(Config + 'source') then
+    SourceBox.Items.LoadFromFile(Config + 'source');
+  if FileExists(Config + 'dest') then
+    DestBox.Items.LoadFromFile(Config + 'dest');
   BackupButton.Enabled := (SourceBox.Count > 0) and (DestBox.Count > 0);
-  if FileExists(S + 'last') then
-    Caption := Caption + ' - last backup ' + LoadText(S + 'last');
+  if FileExists(Config + 'last') then
+    Caption := Caption + ' - last backup ' + LoadText(Config + 'last');
   {$ifdef darwin}
   SourceTree.Root := '/Users';
   DestTree.Root := '/Volumes';
@@ -321,7 +325,7 @@ procedure TBackupThread.Execute;
     end;
 
 var
-  S, D: string;
+  D: string;
 begin
   FreeOnTerminate := True;
   try
@@ -332,11 +336,8 @@ begin
     on E: Exception do
     begin
       AppendLog('error in backup thread');
-      S := GetAppConfigDir(False);
-      ForceDirectories(S);
-      S := IncludeTrailingPathDelimiter(S);
       D := FormatDateTime('YYYY-MM-DD h:nn:ss am/pm', Now);
-      AppendText(S + 'errors.log', D + ' ' + E.ClassName + ' - ' + E.Message);
+      AppendText(Config + 'errors.log', D + ' ' + E.ClassName + ' - ' + E.Message);
     end;
   end;
 end;
@@ -361,7 +362,7 @@ procedure TBackupForm.BackupButtonClick(Sender: TObject);
     end;
     for I := 0 to DestBox.Items.Count - 1 do
     begin
-      S := DestBox.Items[I];;
+      S := DestBox.Items[I];
       if DirectoryExists(S) then
         Continue;
       MessageDlg('Aborting Backup', 'Storage location "' + S + '" could not be found.', mtError, [mbOk], 0);
@@ -389,7 +390,7 @@ end;
 
 procedure TBackupForm.BackupTimerTimer(Sender: TObject);
 var
-  S, D: string;
+  D: string;
 begin
   if FThread <> nil then
   begin
@@ -400,14 +401,11 @@ begin
   end
   else
   begin
-    S := GetAppConfigDir(False);
-    ForceDirectories(S);
-    S := IncludeTrailingPathDelimiter(S);
-    SourceBox.Items.SaveToFile(S + 'source');
-    DestBox.Items.SaveToFile(S + 'dest');
+    SourceBox.Items.SaveToFile(Config + 'source');
+    DestBox.Items.SaveToFile(Config + 'dest');
     D := FormatDateTime('YYYY-MM-DD h:nn:ss am/pm', Now);
-    SaveText(S + 'last', D);
-    AppendText(S + 'backup.log', 'Backup on ' + D + #13'Sources'#13 + Trim(SourceBox.Items.Text) +
+    SaveText(Config + 'last', D);
+    AppendText(Config + 'backup.log', 'Backup on ' + D + #13'Sources'#13 + Trim(SourceBox.Items.Text) +
       #13'Destination'#13 + Trim(DestBox.Items.Text) + #13#13);
     AppendLog('backup complete');
     Caption := 'Backup - last backup ' + D;
